@@ -34,6 +34,37 @@ This isn't just a CRUD playground—it's a showcase of **Clean Architecture**, *
 
 ---
 
+## 🎯 Features
+
+### 👤 User Management
+- **Full Profile System:** Extended ASP.NET Identity with custom fields (name, city, postal code, phone, profile image)
+- **Privacy Controls:** Users can make profiles private or public
+- **Soft Deletion:** Deactivate accounts without losing data
+- **Normalized Search:** Fast, case-insensitive user search using pre-normalized name fields
+
+### 📄 CV Builder
+- **Work Experience:** Add multiple jobs with titles, companies, and date ranges
+- **Education History:** Track degrees, schools, and graduation dates
+- **Skills & Competencies:** Tag yourself with relevant technologies and expertise levels
+- **Public CV Pages:** Shareable profile pages for showcasing your career
+
+### 💬 Messaging System
+- **Direct Messages:** One-on-one conversations between users
+- **Group Conversations:** Multi-participant messaging with read/unread tracking
+- **Real-time Notifications:** Badge indicators for unread message counts
+
+### 🚀 Project Collaboration
+- **Create Projects:** Showcase team projects with descriptions, images, and timelines
+- **Team Management:** Add collaborators and track project participation
+- **Project Discovery:** Browse and search for interesting initiatives
+
+### 🔍 Search & Discovery
+- **CV Search:** Find professionals by name, location, or skills
+- **Profile Visits:** Track who's viewing your profile (with privacy respect)
+- **Admin Dashboard:** User management and system oversight
+
+---
+
 ## 🖼️ Screenshots
 
 <p align="center">
@@ -63,37 +94,6 @@ This isn't just a CRUD playground—it's a showcase of **Clean Architecture**, *
 <p align="center">
   <strong>Screenshot 4:</strong> Project collaboration page displaying team projects and participants.
 </p>
-
----
-
-## 🎯 Features
-
-### 👤 User Management
-- **Full Profile System:** Extended ASP.NET Identity with custom fields (name, city, postal code, phone, profile image)
-- **Privacy Controls:** Users can make profiles private or public
-- **Soft Deletion:** Deactivate accounts without losing data
-- **Normalized Search:** Fast, case-insensitive user search using pre-normalized name fields
-
-### 📄 CV Builder
-- **Work Experience:** Add multiple jobs with titles, companies, and date ranges
-- **Education History:** Track degrees, schools, and graduation dates
-- **Skills & Competencies:** Tag yourself with relevant technologies and expertise levels
-- **Public CV Pages:** Shareable profile pages for showcasing your career
-
-### 💬 Messaging System
-- **Direct Messages:** One-on-one conversations between users
-- **Group Conversations:** Multi-participant messaging with read/unread tracking
-- **Real-time Notifications:** Badge indicators for unread message counts
-
-### 🚀 Project Collaboration
-- **Create Projects:** Showcase team projects with descriptions, images, and timelines
-- **Team Management:** Add collaborators and track project participation
-- **Project Discovery:** Browse and search for interesting initiatives
-
-### 🔍 Search & Discovery
-- **CV Search:** Find professionals by name, location, or skills
-- **Profile Visits:** Track who's viewing your profile (with privacy respect)
-- **Admin Dashboard:** User management and system oversight
 
 ---
 
