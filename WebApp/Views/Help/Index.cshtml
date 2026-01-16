@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = "Hjälp";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/help.css" asp-append-version="true" />
+}
+
+<div class="help-page">
+    <div class="help-card">
+        <div class="help-hero">
+            <h1 class="help-title">Hjälp & guide</h1>
+            <p class="help-sub">Så här blir du medlem, uppdaterar konto, skapar CV, lägger till kompetenser och projekt, söker CV:n, hittar liknande och hanterar meddelanden och konto.</p>
+        </div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Bli medlem</h2>
+            <p class="help-p">Klicka <strong>Bli medlem</strong> i sidomenyn, fyll i email och ett lösenord som uppfyller kraven, och skapa ditt konto.</p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Ändra kontoinformation</h2>
+            <p class="help-p">Gå till <strong>Mitt konto</strong>. Uppdatera namn, stad, telefon, profilbild m.m. och spara.</p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Skapa och redigera ditt CV</h2>
+            <p class="help-p">
+                Öppna <strong>Mitt CV</strong> och klicka <strong>Redigera CV</strong> som är längst ned på sidan. Fyll i profiltext, utbildningar, erfarenheter och lägg till projekt du vill visa. Spara ändringar.
+                Första gången du trycker på Mitt CV kommer du direkt tas till redigerings sidan för att skapa ditt första.
+            </p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Aktivera/Avaktivera privatläget</h2>
+            <p class="help-p">I <strong>Mitt CV</strong> har du i övre högre hörnet av ditt CV en toggle där du antingen aktiverar eller avaktiverar ditt privata läge. När du har knappen i toggle ovanpå PÅ och det lyser grönt så är det privata läget aktiverat och personer som är utloggade kan inte se ditt CV eller vilka projekt du är medlem i. Du kommer även <strong>INTE</strong> synas på startsidans exempel av CV där de tre nyaste visas. När knappen är ovanpå Av och den enbart är grå så är det privata läget av och utloggade personer kan se ditt CV, skicka meddelanden, se vilka projekt du är medlem i samt så kommer ditt CV synas på startsidan (om du är en av de tre senaste skapade).</p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Lägga till och ändra kompetenser</h2>
+            <p class="help-p">I <strong>Redigera CV</strong> öppnar du kompetensväljaren (<em>Redigera kompetenser</em>), väljer upp till 10 unika kompetenser (Topplista och kategorier är synkade), sparar och sedan <strong>Spara ändringar</strong> på CV:t.</p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Inspektera kompetenser</h2>
+            <p class="help-p">För att inspektera en persons kompetenser: gå in på deras CV och klicka på <strong>Visa alla kompetenser</strong>.</p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Lägga till projekt och visa dem på CV</h2>
+            <ul class="help-list">
+                <li><strong>Skapa/gå med:</strong> Gå till <strong>Alla projekt</strong>. Skapa nytt projekt eller gå med i ett befintligt.</li>
+                <li><strong>Välj för CV:</strong> Gå till <strong>Redigera CV</strong> → sektionen <em>Visa projekt på CV</em> → ändra projekt och välj upp till 4 att visa.</li>
+            </ul>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Söka och filtrera bland CV:n</h2>
+            <p class="help-p">I <strong>Sök CV</strong> filtrerar du på namn, stad och kompetenser. Sortera efter senaste, äldsta eller alfabetiskt. Utloggade ser bara publika profiler.</p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Hitta liknande personer</h2>
+            <p class="help-p">
+                Välj <strong>Hitta liknande personer</strong> från ditt CV eller andra personer i Sök CV. Väljer du från ditt CV så kommer
+                den hitta matchande till dig personligen, väljer du från någon annans CV så kommer den hitta matchande CV mot dess personliga kompetenser.
+                Vi matchar på delade kompetenser och rankar bäst matchning högst.
+            </p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Skicka meddelanden</h2>
+            <p class="help-p">Öppna ett CV och använd formuläret <em>Skicka meddelande</em>. Ditt namn och meddelande skickas direkt till profilägaren.</p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Läs dina meddelanden</h2>
+            <p class="help-p">
+                Om du saknar olästa meddelanden ligger hunden <strong>Nocco</strong> och sover i headern. Så fort du får nya eller har olästa mail som ligger och väntar på dig så
+                blir hon klarvaken och larmar dig. Gå via <strong>Meddelanden</strong>-länken för att öppna inkorgen, läsa och svara direkt i mailet, markera som läst eller radera. Du kan inte svara på anonyma meddelanden.
+            </p>
+        </div>
+        <div class="help-divider"></div>
+
+        <div class="help-section">
+            <h2 class="help-h2">Deaktivera eller radera konto</h2>
+            <ul class="help-list">
+                <li><strong>Deaktivera:</strong> Döljer dig i sök, projekt och listor men behåller data om du vill återaktivera.</li>
+                <li><strong>Radera:</strong> Tar bort kontot permanent. Gå till <strong>Mitt konto</strong> och välj radera om du vill ta bort allt.</li>
+            </ul>
+        </div>
+    </div>
+</div>

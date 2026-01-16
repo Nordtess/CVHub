@@ -1,0 +1,378 @@
+﻿@model WebApp.ViewModels.EditCvViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/editcv.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/mycv-projects.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/editcv-project-preview.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/editcv-modal-fix.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Redigera CV";
+
+    var initialSaveState = TempData["Saved"]?.ToString() == "1" ? "saved" : "dirty";
+    var isFirstCvEdit = TempData.Peek("FirstCvEdit")?.ToString() == "1";
+
+    var avatarSrc = string.IsNullOrWhiteSpace(Model.ProfileImagePath)
+        ? Url.Content("~/images/bannersandicons/cvplaceholder2.png")
+        : Url.Content(Model.ProfileImagePath);
+}
+
+<div class="editcv-page">
+    <div class="editcv-banner" aria-label="EditCV-banner">
+        <img src="~/images/bannersandicons/editcv3.png"
+             alt="Banner"
+             class="editcv-banner-img" />
+    </div>
+
+    <div class="editcv-container">
+        <div class="editcv-shell">
+            <div class="editcv-topbar">
+                <div class="editcv-topbar-left">
+                    <h1 class="editcv-title">Redigera CV</h1>
+
+                    <div class="editcv-pill-group">
+                        <span class="editcv-pill">
+                            <strong>Tips:</strong> Ändringar sparas när du klickar “Spara ändringar”.
+                        </span>
+                        <span class="editcv-pill">
+                            Dina personuppgifter hämtas från ditt konto. Ändra dem via kontoinställningar.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="editcv-topbar-right"></div>
+            </div>
+
+            <form id="editcvForm" class="editcv-form" method="post" enctype="multipart/form-data" asp-controller="EditCV" asp-action="Save">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="All" class="text-danger" style="margin-bottom:10px;"></div>
+
+                <input type="hidden" asp-for="EducationJson" id="EducationJson" />
+                <input type="hidden" asp-for="ExperienceJson" id="ExperienceJson" />
+                <input type="hidden" asp-for="SelectedProjectsJson" id="SelectedProjectsJson" />
+                <input type="hidden" asp-for="ExistingProfileImagePath" />
+
+                <div class="editcv-actions-bar">
+                    <div class="editcv-actions-left"></div>
+
+                    <div class="editcv-actions-right">
+                        <div class="editcv-status" data-state="@initialSaveState" id="autosaveStatus">
+                            <span class="editcv-status-dot" aria-hidden="true"></span>
+                            <span class="editcv-status-text">Ej sparad</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="editcv-maincard">
+                    <div class="editcv-grid">
+                        <aside class="editcv-left">
+
+                            <!-- PROFIL -->
+                            <section class="editcv-card">
+                                <div class="editcv-card-head">
+                                    <h2 class="editcv-card-title">Profil</h2>
+                                    <span class="editcv-card-sub">Bild + titel</span>
+                                </div>
+
+                                <div class="editcv-profile">
+                                    <div class="editcv-avatar-wrap">
+                                        <button type="button" class="editcv-avatar" id="avatarBtn" aria-label="Byt profilbild">
+                                            <img id="avatarPreview" class="editcv-avatar-img" alt="Profilbild" src="@avatarSrc" />
+                                            <div class="editcv-avatar-overlay">
+                                                <span class="editcv-avatar-overlay-text">Ladda upp bild</span>
+                                            </div>
+                                        </button>
+
+                                        <input type="file"
+                                               id="AvatarFile"
+                                               name="AvatarFile"
+                                               class="editcv-file"
+                                               accept="image/*" />
+
+                                        <div class="editcv-help editcv-help-center">Rekommenderat: kvadratisk bild (t.ex. 512×512).</div>
+
+                                        <div class="editcv-profile-fields">
+                                            <div class="editcv-field">
+                                                <label class="editcv-label" asp-for="FullName">Namn</label>
+                                                <input class="editcv-input"
+                                                       asp-for="FullName"
+                                                       readonly
+                                                       tabindex="-1" />
+                                            </div>
+
+                                            <div class="editcv-field">
+                                                <label class="editcv-label" asp-for="Headline">Titel / inriktning</label>
+                                                <input class="editcv-input" asp-for="Headline" placeholder="Systemvetenskap • Fullstack" maxlength="60" required pattern="^(?=.*[A-Za-zÅÄÖåäö])[A-Za-zÅÄÖåäö\- ]+$" data-val-required="Titel är obligatoriskt." data-val-pattern="Titel måste innehålla minst 1 bokstav och får bara innehålla bokstäver (A-Ö), mellanslag och bindestreck." />
+                                                <span class="editcv-error" asp-validation-for="Headline" data-valmsg-for="Headline"></span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- KONTAKT (READ-ONLY) -->
+                            <section class="editcv-card">
+                                <div class="editcv-card-head">
+                                    <h2 class="editcv-card-title">Kontakt</h2>
+                                    <span class="editcv-card-sub">Hämtas från ditt konto</span>
+                                </div>
+
+                                <div class="editcv-contact-list">
+                                    <div class="editcv-contact-item">
+                                        <span class="editcv-contact-ico">✉</span>
+                                        <div>
+                                            <div class="editcv-contact-k">Email</div>
+                                            <div class="editcv-contact-v">@Model.Email</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="editcv-contact-item">
+                                        <span class="editcv-contact-ico">📍</span>
+                                        <div>
+                                            <div class="editcv-contact-k">Plats</div>
+                                            <div class="editcv-contact-v">@Model.Location</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="editcv-contact-item">
+                                        <span class="editcv-contact-ico">☎</span>
+                                        <div>
+                                            <div class="editcv-contact-k">Telefon</div>
+                                            <div class="editcv-contact-v">@Model.Phone</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- KOMPETENSER -->
+                            <section class="editcv-card">
+                                <div class="editcv-card-head">
+                                    <div>
+                                        <h2 class="editcv-card-title">Kompetenser</h2>
+                                        <span class="editcv-card-sub">Välj upp till 10 kompetenser</span>
+                                    </div>
+
+                                    <button type="button" class="btn-secondary-custom" id="openCompetenceModal">
+                                        Redigera kompetenser
+                                    </button>
+                                </div>
+
+                                <div class="editcv-help">Tips: Välj dina top 10 – ingen är specialist i allt.</div>
+
+                                <div class="editcv-draft-list" id="competencePills">
+                                    @{
+                                        ViewData["PillClass"] = "cv-skill-pill";
+                                    }
+                                    @await Html.PartialAsync("_CompetencePills", Model.SelectedCompetenceNames)
+                                </div>
+
+                                <div id="selectedCompetenceIdsContainer"></div>
+                            </section>
+
+                        </aside>
+
+                        <main class="editcv-right">
+
+                            <section class="editcv-card">
+                                <div class="editcv-card-head">
+                                    <h2 class="editcv-card-title">Om mig</h2>
+                                    <span class="editcv-card-sub">Kort och tydligt, 3–5 meningar räcker ofta</span>
+                                </div>
+
+                                <div class="editcv-field">
+                                    <label class="editcv-label" asp-for="AboutMe">Text</label>
+                                    <textarea class="editcv-textarea"
+                                              asp-for="AboutMe"
+                                              rows="6"
+                                              maxlength="500"
+                                              id="aboutMe"
+                                              required
+                                              data-val-required="Om mig är obligatoriskt."
+                                              data-val-maxlength="Om mig får max vara 500 tecken."></textarea>
+
+                                    <div class="editcv-under">
+                                        <span class="editcv-error" asp-validation-for="AboutMe" data-valmsg-for="AboutMe"></span>
+                                        <span class="editcv-counter"><span id="aboutCount">0</span>/500</span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="editcv-card">
+                                <div class="editcv-card-head">
+                                    <h2 class="editcv-card-title">Utbildningar</h2>
+                                    <span class="editcv-card-sub">Lägg till flera utan att spara direkt</span>
+                                </div>
+
+                                <div class="editcv-help">År: skriv t.ex. "2020 - 2024" eller "2022 - Pågående".</div>
+
+                                <div class="editcv-draft">
+                                    <div class="editcv-draft-list" id="eduList"></div>
+
+                                    <div class="editcv-draft-actions">
+                                        <button type="button" class="btn-secondary-custom" id="eduToggleBtn">Lägg till utbildning</button>
+                                    </div>
+
+                                    <div class="editcv-collapse" id="eduFormWrap" aria-hidden="true">
+                                        <div class="editcv-mini-form">
+                                            <div class="editcv-two-col">
+                                                <div class="editcv-field">
+                                                    <label class="editcv-label" for="eduSchool">Skola</label>
+                                                    <input class="editcv-input" id="eduSchool" type="text" placeholder="Örebro universitet" />
+                                                </div>
+
+                                                <div class="editcv-field">
+                                                    <label class="editcv-label" for="eduProgram">Program / Inriktning</label>
+                                                    <input class="editcv-input" id="eduProgram" type="text" placeholder="Systemvetenskap • Webbutveckling" />
+                                                </div>
+
+                                                <div class="editcv-field">
+                                                    <label class="editcv-label" for="eduYears">År</label>
+                                                    <input class="editcv-input" id="eduYears" type="text" placeholder="2024 – Pågående" />
+                                                </div>
+
+                                                <div class="editcv-field">
+                                                    <label class="editcv-label" for="eduNote">Kort notis</label>
+                                                    <input class="editcv-input" id="eduNote" type="text" placeholder="7,5 hp datasäkerhet..." />
+                                                </div>
+                                            </div>
+
+                                            <div class="editcv-mini-form-actions">
+                                                <button type="button" class="btn-primary-custom" id="eduAddBtn">Lägg till i listan</button>
+                                                <button type="button" class="btn-secondary-custom" id="eduCancelBtn">Avbryt</button>
+
+                                                <span class="editcv-mini-error" id="eduMiniError" aria-live="polite"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="editcv-card">
+                                <div class="editcv-card-head">
+                                    <h2 class="editcv-card-title">Erfarenheter</h2>
+                                    <span class="editcv-card-sub">Arbetslivserfarenhet (roll + företag)</span>
+                                </div>
+
+                                <div class="editcv-help">År: skriv t.ex. "2020 - 2024" eller "2022 - Pågående".</div>
+
+                                <div class="editcv-draft">
+                                    <div class="editcv-draft-list" id="expList"></div>
+
+                                    <div class="editcv-draft-actions">
+                                        <button type="button" class="btn-secondary-custom" id="expToggleBtn">Lägg till erfarenhet</button>
+                                    </div>
+
+                                    <div class="editcv-collapse" id="expFormWrap" aria-hidden="true">
+                                        <div class="editcv-mini-form">
+                                            <div class="editcv-two-col">
+                                                <div class="editcv-field">
+                                                    <label class="editcv-label" for="expCompany">Företag</label>
+                                                    <input class="editcv-input" id="expCompany" type="text" placeholder="Ex: Volvo" />
+                                                </div>
+
+                                                <div class="editcv-field">
+                                                    <label class="editcv-label" for="expRole">Roll</label>
+                                                    <input class="editcv-input" id="expRole" type="text" placeholder="Ex: Utvecklare" />
+                                                </div>
+
+                                                <div class="editcv-field">
+                                                    <label class="editcv-label" for="expYears">År</label>
+                                                    <input class="editcv-input" id="expYears" type="text" placeholder="2020 - 2024" />
+                                                </div>
+
+                                                <div class="editcv-field">
+                                                    <label class="editcv-label" for="expDesc">Beskrivning</label>
+                                                    <input class="editcv-input" id="expDesc" type="text" placeholder="Kort beskrivning av rollen..." maxlength="600" />
+                                                </div>
+                                            </div>
+
+                                            <div class="editcv-mini-form-actions">
+                                                <button type="button" class="btn-primary-custom" id="expAddBtn">Lägg till i listan</button>
+                                                <button type="button" class="btn-secondary-custom" id="expCancelBtn">Avbryt</button>
+
+                                                <span class="editcv-mini-error" id="expMiniError" aria-live="polite"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="editcv-card">
+                                <div class="editcv-card-head">
+                                    <h2 class="editcv-card-title">Visa projekt på CV</h2>
+                                    <span class="editcv-card-sub">Max 4</span>
+                                </div>
+
+                                <div class="editcv-help">Välj upp till 4 projekt som ska synas på ditt CV.</div>
+
+                                <div class="editcv-projects-actions">
+                                    <button type="button" class="btn-secondary-custom" data-editcv-modal-open="editcv-projects-modal">Ändra projekt</button>
+                                    <a class="btn-secondary-custom" href="@Url.Action("Index", "Projects", new { mine = true })" style="text-decoration:none;">Mina projekt</a>
+                                </div>
+
+                                <div data-editcv-projects-json='@System.Text.Json.JsonSerializer.Serialize(Model.AllMyProjects.Select(p => new { id = p.Id, title = p.Title, createdUtc = p.CreatedUtc.ToString("yyyy-MM-dd"), imagePath = p.ImagePath, shortDescription = p.ShortDescription, techKeysCsv = p.TechKeysCsv, createdByName = p.CreatedByName, createdByEmail = p.CreatedByEmail }), new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web))'></div>
+
+                                <div class="editcv-project-preview" id="editcvProjectPreview"></div>
+
+                                <div id="editcv-projects-modal" class="editcv-modal" aria-hidden="true">
+                                    <div class="editcv-modal__backdrop" data-editcv-modal-close></div>
+                                    <div class="editcv-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="editcv-projects-title">
+                                        <div class="editcv-modal__header">
+                                            <div class="editcv-modal__title" id="editcv-projects-title">Välj projekt (max 4)</div>
+                                            <div class="editcv-modal__counter" id="editcv-projects-counter">0/4 valda</div>
+                                            <button type="button" class="editcv-modal__close" data-editcv-modal-close aria-label="Stäng">×</button>
+                                        </div>
+                                        <div class="editcv-modal__body">
+                                            <div class="editcv-picker__list" id="editcv-projects-picker"></div>
+                                        </div>
+                                        <div class="editcv-modal__footer">
+                                            <div></div>
+                                            <div class="editcv-modal__actions">
+                                                <button type="button" class="btn-secondary-custom" data-editcv-modal-close>Stäng</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                        </main>
+                    </div>
+                </div>
+
+                <div class="editcv-bottom">
+                    <div class="editcv-bottom-inner">
+                        @if (isFirstCvEdit)
+                        {
+                            <button type="button" class="btn-secondary-custom" disabled style="text-decoration:none; opacity:0.55; cursor:not-allowed;" title="Spara ditt CV först">
+                                Tillbaka
+                            </button>
+                        }
+                        else
+                        {
+                            <a class="btn-secondary-custom" asp-controller="MyCV" asp-action="Index" style="text-decoration:none;" id="backBtn">
+                                Tillbaka
+                            </a>
+                        }
+
+                        <div class="editcv-bottom-right">
+                            <button type="submit" class="btn-primary-custom" id="saveBtnBottom">
+                                Spara ändringar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_CompetenceSelectorModal", Model)
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/pages/editcv.js" asp-append-version="true"></script>
+}

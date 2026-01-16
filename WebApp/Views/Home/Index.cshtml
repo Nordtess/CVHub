@@ -1,0 +1,365 @@
+﻿@model WebApp.Controllers.HomeIndexVm
+
+@{
+    ViewData["Title"] = "Hem";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/home.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/projects.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/home-project-showcase.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/searchcv.css" asp-append-version="true" />
+}
+
+<div class="home-page">
+    <div class="home-hero">
+        <img class="home-logo" src="~/images/svg/icons/logo.svg" alt="NotLinkedIn logo" />
+        <h1 class="home-h1">Välkommen till NotLinkedIn!</h1>
+    </div>
+
+    <p class="home-sub">
+        Framtidens karriärplattform där vetenskaplig design möter algoritmisk precision.
+        Vi har optimerat varje pixel för att ge dig störst chans på marknaden och se
+        till att rätt arbetsgivare hittar just din expertis.
+    </p>
+
+    <section class="home-card home-split-card home-welcome-card">
+        <div class="home-banner" aria-hidden="true">
+            <img class="home-banner-img home-banner-img--welcome"
+                 src="~/images/bannersandicons/welcome.png"
+                 alt="Welcome banner" />
+        </div>
+
+        <div class="home-card-body home-card--text">
+            <p>
+                NotLinkedIn är en webbaserad plattform där individer kan skapa, designa och presentera sina personliga CV på ett tydligt och visuellt tilltalande sätt.
+                Fokus ligger på att ge användaren full kontroll över hur kompetens, erfarenhet och personlighet visas – utan onödiga titlar, klichéer eller överdrivna formuleringar.
+            </p>
+            <p>
+                Som användare kan du bygga ett CV som faktiskt speglar vem du är och vad du kan bidra med.
+                Genom en strukturerad men flexibel design går det att lyfta fram utbildning, arbetslivserfarenhet, tekniska färdigheter och personliga styrkor på ett sätt som är lätt att ta till sig för andra.
+            </p>
+            <p>
+                Plattformen är anpassad för arbetsgivare och rekryterare. Med smart filtrering och sökbara profiler blir matchningen mer träffsäker än enbart jobbtitlar och nyckelord.
+                Resultatet: en mer överskådlig och effektiv process för både kandidater och rekryterare.
+            </p>
+            <p>
+                NotLinkedIn fungerar från två håll – både som ett verktyg för personer som vill presentera sig professionellt
+                och som ett stöd för arbetsgivare som söker rätt person till rätt roll.
+            </p>
+        </div>
+    </section>
+
+    <h2 class="home-h2">Privat meddelandefunktion</h2>
+    <p class="home-sub">
+        Kontakta rätt person direkt – utan externa verktyg. Snabbt, privat och integrerat i plattformen.
+    </p>
+
+    <section class="home-card home-split-card home-message-card">
+        <div class="home-banner" aria-hidden="true">
+            <img class="home-banner-img home-banner-img--message"
+                 src="~/images/bannersandicons/message.png"
+                 alt="Meddelanden banner" />
+        </div>
+
+        <div class="home-card-body home-card--text">
+            <p>
+                Plattformen innehåller även en säker och privat meddelandetjänst som gör det möjligt för användare att kommunicera direkt med varandra.
+                Meddelandefunktionen är utformad för att skydda användarnas integritet och säkerställa att konversationer förblir privata mellan avsändare och mottagare.
+            </p>
+            <p>
+                Kandidater och arbetsgivare kan enkelt ta kontakt, ställa frågor och föra dialog kring möjligheter och öppna positioner – utan externa verktyg.
+                Det skapar en sammanhållen och trygg upplevelse där all relevant interaktion sker direkt på plattformen.
+            </p>
+        </div>
+    </section>
+
+    <h2 class="home-h2">Datadriven CV-design för maximal räckvidd</h2>
+    <p class="home-sub">
+        Våra layouter är inte bara snygga – de är framtagna av algoritmer för att
+        vetenskapligt maximera dina chanser på arbetsmarknaden. Genom en optimerad struktur ser vi
+        till att arbetsgivare med avancerade sökfunktioner hittar precis din profil
+        bland tusentals andra. Ge din karriär det tekniska försprång den förtjänar.
+    </p>
+
+    <section class="home-card home-cv-card">
+        <div class="home-banner" aria-hidden="true">
+            <img class="home-banner-img home-banner-img--cv"
+                 src="~/images/bannersandicons/cvexample.png"
+                 alt="CV banner" />
+        </div>
+
+        <div class="home-card-body home-cv-body">
+            <div class="cv-carousel" data-carousel="cv">
+                <div class="carousel-nav-zone left">
+                    @await Html.PartialAsync("_CarouselNavButtons")
+                </div>
+
+                <div class="cv-stage" aria-label="Karusell med CV-profiler">
+                    @{ 
+                        // Hantera null och fallback till tom lista
+                        var cvs = Model.LatestPublicCvs ?? new List<WebApp.Controllers.HomeIndexVm.CvCardVm>();
+                        if (cvs.Count == 0)
+                        {
+                            <a class="cv-slide is-active" href="#" data-href="#" aria-label="Inga profiler">
+                                <div class="cv-mini">
+                                    <div class="cv-mini-top">
+                                        <div class="cv-mini-avatar">?</div>
+                                        <div class="cv-mini-id">
+                                            <div class="cv-mini-name">Inga publika CV</div>
+                                            <div class="cv-mini-role">Det finns inga publika profiler ännu.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                        else
+                        {
+                            for (var i = 0; i < cvs.Count; i++)
+                            {
+                                var cv = cvs[i];
+                                var isActive = i == 0;
+
+                                // Välj avatar eller fallback-bild
+                                var avatarSrc = string.IsNullOrWhiteSpace(cv.ProfileImagePath)
+                                    ? Url.Content("~/images/bannersandicons/cvplaceholder2.png")
+                                    : Url.Content(cv.ProfileImagePath);
+
+                                // Använd rubrik eller default-texter
+                                var headline = string.IsNullOrWhiteSpace(cv.Headline)
+                                    ? "Systemvetenskap • Fullstack"
+                                    : cv.Headline;
+
+                                // Trunkera "about" för att hålla korta kort i karusellen
+                                var about = string.IsNullOrWhiteSpace(cv.AboutMe) ? "" : cv.AboutMe.Trim();
+
+                                <a class="cv-slide @(isActive ? "is-active" : "")" href="/InspectCV/@cv.UserId" data-href="/InspectCV/@cv.UserId" aria-label="Öppna CV: @cv.FullName">
+                                    <div class="searchcv-card">
+                                        <div class="searchcv-doc">
+                                            <div class="searchcv-doc-top">
+                                                <div class="searchcv-doc-grid">
+                                                    <div class="searchcv-doc-avatar" aria-hidden="true">
+                                                        <img src="@avatarSrc" alt="" />
+                                                    </div>
+
+                                                    <div class="searchcv-doc-center">
+                                                        <div class="searchcv-doc-title">@cv.FullName</div>
+                                                        <div class="searchcv-doc-sub">@headline</div>
+                                                        <div class="searchcv-doc-meta">
+                                                            <span class="searchcv-dot" aria-hidden="true">📍</span>
+                                                            <span>@(string.IsNullOrWhiteSpace(cv.City) ? "—" : cv.City)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="searchcv-doc-body">
+                                                @if (!string.IsNullOrWhiteSpace(about))
+                                                {
+                                                    <div class="about-box">
+                                                        <div class="about-text">@about</div>
+                                                    </div>
+                                                }
+
+                                                @if (cv.Educations is { Length: > 0 })
+                                                {
+                                                    <div class="searchcv-lines" aria-label="Utbildningar">
+                                                        <div class="searchcv-lines-title">Utbildning</div>
+                                                        @foreach (var line in cv.Educations)
+                                                        {
+                                                            <div class="searchcv-line">@line</div>
+                                                        }
+                                                    </div>
+                                                }
+
+                                                @if (cv.Experiences is { Length: > 0 })
+                                                {
+                                                    <div class="searchcv-lines" aria-label="Erfarenheter">
+                                                        <div class="searchcv-lines-title">Erfarenhet</div>
+                                                        @foreach (var line in cv.Experiences)
+                                                        {
+                                                            <div class="searchcv-line">@line</div>
+                                                        }
+                                                    </div>
+                                                }
+
+                                                <div class="searchcv-doc-bottom">
+                                                    <div class="searchcv-skills" aria-label="Kompetenser">
+                                                        @if (cv.Skills is { Length: > 0 })
+                                                        {
+                                                            var totalSkills = cv.Skills.Length;
+                                                            foreach (var s in cv.Skills.Take(4))
+                                                            {
+                                                                <span class="searchcv-skill">@s</span>
+                                                            }
+
+                                                            if (totalSkills > 4)
+                                                            {
+                                                                <span class="searchcv-skill-more">+@(totalSkills - 4) fler</span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="searchcv-skill searchcv-skill--muted">Inga kompetenser</span>
+                                                        }
+                                                    </div>
+
+                                                    <div class="searchcv-doc-sep" aria-hidden="true"></div>
+                                                    <div class="searchcv-doc-foot">
+                                                        <span><strong>@cv.ProjectCount</strong> projekt på CV</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        }
+                    }
+                </div>
+
+                <div class="carousel-nav-zone right">
+                    @await Html.PartialAsync("_CarouselNavButtonRight")
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <h2 class="home-h2">Global Projekt-Showcase: Där kompetens blir synlig</h2>
+    <p class="home-sub">
+        Upplev pulsen i vårt community.
+        Vi ger dig verktygen att inte bara skriva om din kunskap, utan att visa den i
+        praktiken. Genom att skapa egna eller gå med i befintliga projekt kliver du ur CV:ts ramar och
+        visar arbetsgivare vad du faktiskt går för när det verkligen gäller. Här presenteras
+        realtidsflödet av de senaste projekten som laddas upp på plattformen.
+    </p>
+
+    <section class="home-card home-project-card">
+        <img class="home-project-badge" src="~/images/checklatestfix.png" alt="" aria-hidden="true" />
+
+        <div class="home-banner" aria-hidden="true">
+            <img class="home-banner-img home-banner-img--project"
+                 src="~/images/bannersandicons/projectsexample.png"
+                 alt="Projekt banner" />
+        </div>
+
+        <div class="home-card-body home-project-body">
+            <div class="home-project-showcase">
+                @if (Model.LatestProject is null)
+                {
+                    <div class="projects-empty">Inga projekt finns ännu.</div>
+                }
+                else
+                {
+                    var p = Model.LatestProject;
+                    <div class="home-project-showcase__cardwrap">
+                        <a class="projects-card" href="@Url.Action("Details", "Projects", new { id = p.Id })" aria-label="Visa projekt: @p.Title" style="display:block;">
+                            <div class="projects-doc">
+                                <div class="projects-doc-top">
+                                    <div class="projects-doc-grid">
+                                        <div class="projects-doc-avatar" aria-hidden="true">
+                                            <img src="@(string.IsNullOrWhiteSpace(p.ImagePath) ? "/images/projects/rocketship.png" : p.ImagePath)" alt="" />
+                                        </div>
+
+                                        <div class="projects-doc-center">
+                                            <div class="projects-doc-title">@p.Title</div>
+                                            <div class="projects-doc-createdby">
+                                                Skapare: @(string.IsNullOrWhiteSpace(p.CreatedByName) ? (p.CreatedByEmail ?? "Okänd") : p.CreatedByName)
+                                            </div>
+                                            <div class="projects-doc-meta">Skapad: @p.CreatedUtc.ToString("yyyy-MM-dd")</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="projects-doc-body">
+                                    @if (!string.IsNullOrWhiteSpace(p.ShortDescription))
+                                    {
+                                        <div class="projects-doc-desc-card">
+                                            <div class="projects-doc-desc" style="text-align:center;">@p.ShortDescription</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="projects-doc-desc-card">
+                                            <div class="projects-doc-desc projects-doc-desc--muted" style="text-align:center;">Ingen kort beskrivning.</div>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(p.Description))
+                                    {
+                                        <div class="projects-doc-desc-card" style="margin-top: 10px;">
+                                            <div class="projects-doc-desc" style="text-align:left;">
+                                                @(p.Description!.Length > 220 ? (p.Description.Substring(0, 220) + "…") : p.Description)
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(p.TechKeysCsv))
+                                    {
+                                        <div class="projects-doc-bottom">
+                                            <div class="projects-doc-sep" aria-hidden="true"></div>
+                                            <div class="projects-doc-tech" aria-label="Tech stack">
+                                                @foreach (var key in p.TechKeysCsv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                                                {
+                                                    <span class="projects-doc-tech-tile">
+                                                        <img class="projects-doc-tech-icon" src="~/images/svg/techstack/@(key).svg" alt="@key" />
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <div style="display:flex; justify-content:center; margin-top: 12px;">
+                <a class="btn-secondary-custom" href="@Url.Action("Index", "Projects")">Se alla projekt</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="home-stories">
+        <div class="story-card">
+            <div class="story-media">
+                <img src="~/images/customers/customer1.png" alt="Anna, småföretagare" />
+            </div>
+
+            <div class="story-content">
+                <div class="story-title">Anna, småföretagare</div>
+                <p class="story-lead">
+                    Med vår plattform kan Anna tryggt kontakta andra användare och dela erfarenheter via privata, säkra meddelanden.
+                </p>
+
+                <blockquote class="story-quote">
+                    "Jag trodde aldrig det skulle kännas så enkelt att hitta rätt kontakter. Meddelandefunktionen gjorde att jag kunde prata direkt med rätt personer,
+                    ställa frågor och bygga förtroende – utan att lämna plattformen."
+                </blockquote>
+            </div>
+        </div>
+
+        <div class="story-card story-card--reverse">
+            <div class="story-media">
+                <img src="~/images/customers/customer2.png" alt="Erik, rekryterare" />
+            </div>
+
+            <div class="story-content">
+                <div class="story-title">Erik, rekryterare</div>
+                <p class="story-lead">
+                    Som rekryterare använder Erik plattformen för att snabbt komma i kontakt med kandidater och föra en mer personlig dialog redan i ett tidigt skede.
+                </p>
+
+                <blockquote class="story-quote">
+                    "För mig har det gjort stor skillnad att kunna kontakta kandidater direkt på plattformen. Jag får en bättre bild av personen bakom CV:t och kan ställa
+                    rätt frågor tidigt i processen. Det sparar tid, minskar missförstånd och gör rekryteringen betydligt mer mänsklig."
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/home.js" asp-append-version="true"></script>
+}

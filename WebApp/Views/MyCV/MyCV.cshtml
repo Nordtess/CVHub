@@ -1,0 +1,293 @@
+﻿@model WebApp.Controllers.MyCvController.MyCvProfileViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/mycv.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/mycv-projects.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Mitt CV";
+
+    var avatarSrc = string.IsNullOrWhiteSpace(Model.ProfileImagePath)
+        ? Url.Content("~/images/bannersandicons/cvplaceholder2.png")
+        : Url.Content(Model.ProfileImagePath);
+
+    var headline = string.IsNullOrWhiteSpace(Model.Headline)
+        ? "Systemvetenskap • Fullstack"
+        : Model.Headline;
+
+    var myProjectsUrl = Url.Action("Index", "Projects", new { mine = true });
+    var similarUrl = Url.Action("Index", "SearchCv", new { mode = "similar", source = "me" });
+}
+
+@Html.AntiForgeryToken()
+
+<div class="cv-page">
+    <div class="cv-banner" aria-label="CV-banner">
+        <img src="~/images/bannersandicons/mycv3.png"
+             alt="Banner"
+             class="cv-banner-img" />
+    </div>
+
+    <div class="cv-tip">
+        Tips: Vill du dölja dig för icke inloggade personer sätt på privat läge!
+    </div>
+
+    <div class="cv-card">
+        <div class="cv-topbar">
+            <div class="cv-visits">
+                Antal besök: <span class="cv-visits-num">@Model.VisitCount</span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:10px;">
+                <a class="btn-secondary-custom" href="@similarUrl" style="text-decoration:none;">Hitta liknande personer</a>
+
+                <div class="cv-privacy">
+                    <span class="cv-privacy-label">Privat läge</span>
+
+                    <button type="button"
+                            class="cv-toggle@(Model.IsPrivate ? " is-on" : "")"
+                            aria-pressed="@(Model.IsPrivate ? "true" : "false")"
+                            aria-label="Privat läge">
+                        <span class="cv-toggle__label cv-toggle__label--off">Av</span>
+                        <span class="cv-toggle__label cv-toggle__label--on">På</span>
+                        <span class="cv-toggle__knob" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cv-divider"></div>
+
+        <div class="cv-grid">
+            <div class="cv-left">
+                <div class="cv-profile-card">
+                    <div class="cv-avatar" aria-label="Profilbild">
+                        <img class="cv-avatar-img" src="@avatarSrc" alt="Profilbild" />
+                        <div class="cv-avatar-overlay">
+                            <div class="cv-avatar-overlay-text">Öppna redigeraren för att ändra bild</div>
+                        </div>
+                    </div>
+
+                    <div class="cv-hero-text">
+                        <div class="cv-name">@Model.FullName</div>
+                        <div class="cv-role">@headline</div>
+                    </div>
+                </div>
+
+                <section class="cv-box">
+                    <h3 class="cv-box-title">Kontakt</h3>
+
+                    <div class="cv-contact-list">
+                        <div class="cv-contact-item">
+                            <span class="cv-contact-ico">✉</span>
+                            <div>
+                                <div class="cv-contact-k">Email</div>
+                                <div class="cv-contact-v">@Model.Email</div>
+                            </div>
+                        </div>
+
+                        <div class="cv-contact-item">
+                            <span class="cv-contact-ico">📍</span>
+                            <div>
+                                <div class="cv-contact-k">Plats</div>
+                                <div class="cv-contact-v">@Model.City</div>
+                            </div>
+                        </div>
+
+                        <div class="cv-contact-item">
+                            <span class="cv-contact-ico">☎</span>
+                            <div>
+                                <div class="cv-contact-k">Telefon</div>
+                                <div class="cv-contact-v">@Model.PhoneNumber</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cv-box">
+                    <div class="cv-box-head">
+                        <h3 class="cv-box-title" style="margin:0;">Kompetenser</h3>
+                        @if (Model.Skills is { Length: > 0 })
+                        {
+                            <button type="button" class="btn-secondary-custom" data-mycv-modal-open="mycv-competences-modal">Visa alla kompetenser</button>
+                        }
+                    </div>
+                    @await Html.PartialAsync("_CompetencePills", Model.Skills)
+                </section>
+            </div>
+
+            <div class="cv-right">
+                <section class="cv-box">
+                    <h3 class="cv-box-title">Profil</h3>
+                    @if (!string.IsNullOrWhiteSpace(Model.AboutMe))
+                    {
+                        <p class="cv-paragraph">@Model.AboutMe</p>
+                    }
+                    else
+                    {
+                        <p class="cv-paragraph cv-paragraph-muted">Ingen profiltext ännu. Öppna redigeraren för att lägga till.</p>
+                    }
+                </section>
+
+                <section class="cv-box">
+                    <h3 class="cv-box-title">Utbildningar</h3>
+
+                    @if (Model.Educations is { Count: > 0 })
+                    {
+                        foreach (var e in Model.Educations)
+                        {
+                            <div class="cv-item">
+                                <div class="cv-item-title">@e.School</div>
+                                <div class="cv-item-sub">@e.Years • @e.Program</div>
+                                @if (!string.IsNullOrWhiteSpace(e.Note))
+                                {
+                                    <div class="cv-item-sub cv-item-muted">@e.Note</div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="cv-paragraph cv-paragraph-muted">Inga utbildningar tillagda ännu.</p>
+                    }
+                </section>
+
+                <section class="cv-box">
+                    <h3 class="cv-box-title">Tidigare erfarenhet</h3>
+
+                    @if (Model.Experiences is { Count: > 0 })
+                    {
+                        foreach (var ex in Model.Experiences)
+                        {
+                            <div class="cv-item">
+                                <div class="cv-item-title">@ex.Company</div>
+                                <div class="cv-item-sub">@ex.Years • @ex.Role</div>
+                                @if (!string.IsNullOrWhiteSpace(ex.Description))
+                                {
+                                    <div class="cv-item-sub cv-item-muted">@ex.Description</div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="cv-paragraph cv-paragraph-muted">Ingen erfarenhet tillagd ännu.</p>
+                    }
+                </section>
+
+                <section class="cv-box">
+                    <div class="mycv-projects-header">
+                        <h3 class="cv-box-title" style="margin: 0;">Projekt</h3>
+                        <div class="mycv-projects-header__actions">
+                            <a class="btn-primary-custom" href="@myProjectsUrl">Mina projekt</a>
+                        </div>
+                    </div>
+
+                    <div class="mycv-projects-card">
+                        <div class="mycv-projects-grid">
+                            @if (Model.Projects is null || Model.Projects.Count == 0)
+                            {
+                                <div class="mycv-projects-empty">Inga projekt valda ännu.</div>
+                            }
+                            else
+                            {
+                                foreach (var p in Model.Projects.Take(4))
+                                {
+                                    <a class="mycv-project-card" href="@Url.Action("Details", "Projects", new { id = p.Id })" aria-label="Visa projekt: @p.Title">
+                                        <div class="mycv-project-doc">
+                                            <div class="mycv-project-doc-top">
+                                                <div class="mycv-project-doc-grid">
+                                                    <div class="mycv-project-doc-avatar" aria-hidden="true">
+                                                        <img src="@(string.IsNullOrWhiteSpace(p.ImagePath) ? "/images/projects/rocketship.png" : p.ImagePath)" alt="" />
+                                                    </div>
+
+                                                    <div class="mycv-project-doc-center">
+                                                        <div class="mycv-project-doc-title">@p.Title</div>
+                                                        <div class="mycv-project-doc-createdby">Skapare: @p.CreatedBy</div>
+                                                        <div class="mycv-project-doc-meta">Skapad: @p.CreatedUtc.ToString("yyyy-MM-dd")</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mycv-project-doc-body">
+                                                @if (!string.IsNullOrWhiteSpace(p.ShortDescription))
+                                                {
+                                                    <div class="mycv-project-pill">
+                                                        <div class="mycv-project-pill__text">@p.ShortDescription</div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="mycv-project-pill mycv-project-pill--muted">
+                                                        <div class="mycv-project-pill__text">Ingen kort beskrivning.</div>
+                                                    </div>
+                                                }
+
+                                                @if (p.TechKeys is { Length: > 0 })
+                                                {
+                                                    <div class="mycv-project-doc-bottom">
+                                                        <div class="mycv-project-doc-sep" aria-hidden="true"></div>
+                                                        <div class="mycv-project-doc-tech" aria-label="Tech stack">
+                                                            @foreach (var key in p.TechKeys)
+                                                            {
+                                                                <span class="mycv-project-doc-tech-tile">
+                                                                    <img class="mycv-project-doc-tech-icon" src="~/images/svg/techstack/@(key).svg" alt="@key" />
+                                                                </span>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                     </a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Skills is { Length: > 0 })
+    {
+        <div id="mycv-competences-modal" class="mycv-modal" aria-hidden="true">
+            <div class="mycv-modal__backdrop" data-mycv-modal-close></div>
+            <div class="mycv-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="mycv-competences-title">
+                <div class="mycv-modal__header">
+                    <div class="mycv-modal__title" id="mycv-competences-title">Alla kompetenser</div>
+                    <button type="button" class="mycv-modal__close" data-mycv-modal-close aria-label="Stäng">×</button>
+                </div>
+                <div class="mycv-modal__body">
+                    <div class="cv-skill-grid">
+                        @foreach (var s in Model.Skills)
+                        {
+                            <span class="cv-skill-pill">@s</span>
+                        }
+                    </div>
+                </div>
+                <div class="mycv-modal__footer">
+                    <div></div>
+                    <div class="mycv-modal__actions">
+                        <button type="button" class="btn-secondary-custom" data-mycv-modal-close>Stäng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="cv-edit-button-container">
+        <a href="@Url.Action("Index", "EditCV")" class="btn-primary-custom">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+            </svg>
+            Redigera CV
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/mycv.js" asp-append-version="true"></script>
+}
