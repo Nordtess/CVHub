@@ -34,6 +34,38 @@ This isn't just a CRUD playground—it's a showcase of **Clean Architecture**, *
 
 ---
 
+## 🖼️ Screenshots
+
+<p align="center">
+  <img src="screenshots/home-page.png" alt="Screenshot 1: Home Page" width="800">
+</p>
+<p align="center">
+  <strong>Screenshot 1:</strong> The landing page with user authentication and navigation.
+</p>
+
+<p align="center">
+  <img src="screenshots/cv-profile.png" alt="Screenshot 2: CV Profile View" width="800">
+</p>
+<p align="center">
+  <strong>Screenshot 2:</strong> A complete user CV profile showing work experience, education, and skills.
+</p>
+
+<p align="center">
+  <img src="screenshots/messaging.png" alt="Screenshot 3: Messaging System" width="800">
+</p>
+<p align="center">
+  <strong>Screenshot 3:</strong> The direct messaging interface with conversation history.
+</p>
+
+<p align="center">
+  <img src="screenshots/project-showcase.png" alt="Screenshot 4: Project Showcase" width="800">
+</p>
+<p align="center">
+  <strong>Screenshot 4:</strong> Project collaboration page displaying team projects and participants.
+</p>
+
+---
+
 ## 🎯 Features
 
 ### 👤 User Management
