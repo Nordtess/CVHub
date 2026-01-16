@@ -1,3 +1,5 @@
+<div align="center">
+
 # 💼 CVHub: Professional Networking Done Right
 **Where careers connect and talent shines—minus the corporate cringe.** A full-stack ASP.NET Core MVC platform built with Clean Architecture, wrapped in Razor views, and served with Docker on the side.
 
